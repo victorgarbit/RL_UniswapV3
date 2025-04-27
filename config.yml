@@ -9,7 +9,7 @@ env_vars:
   DEBUG_MODE: False
 
 train_params:
-  n_nodes: 64
-  lr: 0.03
-  n_steps: 256
-  num_episodes: 5
+  n_nodes: 16 # OG value = 64
+  lr: 0.03 # OG value = 0.03
+  n_steps: 32 # OG value = 256
+  num_episodes: 1 # OG value = 5

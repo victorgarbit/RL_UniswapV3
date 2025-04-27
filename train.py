@@ -43,9 +43,9 @@ if __name__ == "__main__":
     num_episodes = train_params["num_episodes"]
 
     # load data
-    price_history_df = pd.read_csv("blockchain_data/price_history_array_050521_102922.csv")
-    volume_df = pd.read_csv("blockchain_data/volume_array_050521_102922.csv", encoding="latin-1")
-    liquidity_df = pd.read_csv("blockchain_data/total_liquidity_array_050521_102922.csv")
+    price_history_df = pd.read_csv("blockchain_data/blockchain_data/price_history_array_050521_102922.csv")
+    volume_df = pd.read_csv("blockchain_data/blockchain_data/volume_array_050521_102922.csv", encoding="latin-1")
+    liquidity_df = pd.read_csv("blockchain_data/blockchain_data/total_liquidity_array_050521_102922.csv")
 
     # policy training
     env = DummyVecEnv(
@@ -88,4 +88,5 @@ if __name__ == "__main__":
     plt.xlabel("Episode")
     plt.legend(["Agent Position Value", "Starting Position", "100% ETH Position Value"])
     g.axes.get_xaxis().set_visible(False)
-    plt.savefig(f"results/rl_train {time.asctime()}.png")
+    timestamp = time.strftime("%Y%m%d-%H%M%S")  # <- safer timestamp
+    plt.savefig(f"results/rl_train_{timestamp}.png")

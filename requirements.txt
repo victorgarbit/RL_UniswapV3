@@ -2,5 +2,13 @@ pandas==2.1.3
 matplotlib==3.8.2
 stable-baselines3==2.0.0
 gym==0.26.2
+ipykernel==6.24.0
+pandas == 2.1.3
 Shimmy==1.3.0
 pyyaml==6.0.1
+
+
+# Deactivate : "deactivate"
+# Activate : ".\venv\Scripts\Activate.ps1"
+# Create : "python -m venv venv"
+

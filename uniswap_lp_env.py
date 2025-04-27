@@ -12,14 +12,14 @@ import numpy as np
 from gym import spaces
 
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s") # Setting up output formats (time, LOG, message)
 train_logger = logging.getLogger("train_logger")
 
 
 class UniswapLPEnv(gym.Env):
     def __init__(
         self,
-        price_history_df,
+        price_history_df, 
         volume_df,
         liquidity_df,
         initial_cash,
@@ -292,7 +292,7 @@ class UniswapLPEnv(gym.Env):
                 self.new_position_token1[tick_idx] = self.position_token1[tick_idx].copy()
                 self.new_position_cash = self.position_cash + cur_price * pcent_change * self.position_token0[tick_idx]
 
-        if self.DEBUG_MODE:
+        if self.DEBUG_MODE: # Print debugging information (positions and decisions) if DEBUG_MODE is on
             train_logger.info(f"Current ETH Price: {cur_price}")
             train_logger.info(f"Current Position Token0: {self.position_token0}")
             train_logger.info(f"Current Position Token1: {self.position_token1}")
