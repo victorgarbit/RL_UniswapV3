@@ -2,4 +2,9 @@ __MACOSX
 __pycache__
 .vscode
 blockchain_data
+blockchain_data.zip
 results
+venv/
+walid_data/
+.dist/
+test.ipynb

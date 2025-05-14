@@ -76,14 +76,14 @@ class UniswapLPEnv(gym.Env):
         # Action space is a discrete tuple. First entry is (0, 1, 2) --> (HOLD, ADD, REMOVE). 2nd entry is (0, 1, ..., N_TICK_RANGE -1) --> which tick to modify. 3rd entry is (0, 1, ..., 100) --> % liquidity to add/remove.
         self.action_space = spaces.MultiDiscrete([3, self.NUM_ACTIVE_TICK_RANGES, 101])
         self.observation_space = spaces.Box(
-            np.concatenate(
+            np.concatenate( # low
                 [
                     np.zeros(2 * (self.NUM_ACTIVE_TICK_RANGES) + 1),
                     self.MIN_PRICE * np.ones(self.ETH_PRICE_HISTORY_OFFSET + 1),
                     np.zeros(2 * self.NUM_ACTIVE_TICK_RANGES),
                 ]
             ),
-            np.concatenate(
+            np.concatenate( # high
                 [
                     sys.maxsize * np.ones(2 * (self.NUM_ACTIVE_TICK_RANGES) + 1),
                     self.MAX_PRICE * np.ones(self.ETH_PRICE_HISTORY_OFFSET + 1),

@@ -1,4 +1,4 @@
-import os
+    import os
 import time
 
 import yaml
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             )
         ]
     )
-    policy_kwargs = {"net_arch": {"pi": [n_nodes, n_nodes], "vf": [n_nodes, n_nodes]}}
+    policy_kwargs = {"net_arch": {"pi": [n_nodes, n_nodes], "vf": [n_nodes, n_nodes]}} # two fully connected layers
     model = PPO("MlpPolicy", env, learning_rate=lr, n_steps=n_steps, policy_kwargs=policy_kwargs, verbose=0)
 
     start = time.time()
@@ -80,9 +80,9 @@ if __name__ == "__main__":
 
     # Plot Results
     g = plt.gca()
-    plt.plot(env.get_attr("steps_per_episode_list")[0], "-o")
-    plt.axhline(y=INITIAL_CASH, color="black")
-    plt.plot(env.get_attr("eth_pos_list")[0], "-o")
+    plt.plot(env.get_attr("steps_per_episode_list")[0], "-o") # agent position value
+    plt.axhline(y=INITIAL_CASH, color="black") # starting position
+    plt.plot(env.get_attr("eth_pos_list")[0], "-o") # 100% ETH position value
     plt.title("Uniswap Agent Policy Training Results")
     plt.ylabel("Position Value")
     plt.xlabel("Episode")
