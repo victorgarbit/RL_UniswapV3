@@ -64,6 +64,7 @@ if __name__ == "__main__":
                 price_history_df,
                 volume_df,
                 liquidity_df,
+                sentiment_df,
                 INITIAL_CASH,
                 MIN_TICK,
                 MAX_TICK,

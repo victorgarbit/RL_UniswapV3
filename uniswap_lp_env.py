@@ -22,6 +22,7 @@ class UniswapLPEnv(gym.Env):
         price_history_df, 
         volume_df,
         liquidity_df,
+        sentiment_df,
         initial_cash,
         min_tick,
         max_tick,
@@ -32,12 +33,13 @@ class UniswapLPEnv(gym.Env):
         debug_mode=False,
     ):
         super(UniswapLPEnv, self).__init__()
-        # Hourly ETH price history
         self.price_history_df = price_history_df
-        # Total liquidity in each tick range (hourly)
         self.liquidity_df = liquidity_df
-        # Volume traded in each tick range (hourly)
         self.volume_df = volume_df
+        self.sentiment_df = sentiment_df
+
+        self.NUM_SENTIMENT_FEATURES = len(sentiment_df.columns) - 2  # Adjust this number based on your actual sentiment data structure
+
 
         self.TOKEN0_DECIMALS = token0_decimals
         self.TOKEN1_DECIMALS = token1_decimals
@@ -65,7 +67,7 @@ class UniswapLPEnv(gym.Env):
         # [(Hold, Buy, Sell), (Whick Tick), (% to Add/Remove)]
         self.action_space_dim = 3
         # Multiply by 4 for Token0, Token1, Volume, Liquidity, add 1 for cash not in Uniswap, add 24 for ETH price over last 24 hours
-        self.observation_space_dim = 4 * (self.NUM_ACTIVE_TICK_RANGES) + 1 + self.ETH_PRICE_HISTORY_OFFSET + 1
+        self.observation_space_dim = 4 * (self.NUM_ACTIVE_TICK_RANGES) + 1 + self.ETH_PRICE_HISTORY_OFFSET + 1 + self.NUM_SENTIMENT_FEATURES
         self.fee_history = []
         self.position_history = []
         self.current_step = None
@@ -81,6 +83,7 @@ class UniswapLPEnv(gym.Env):
                     np.zeros(2 * (self.NUM_ACTIVE_TICK_RANGES) + 1),
                     self.MIN_PRICE * np.ones(self.ETH_PRICE_HISTORY_OFFSET + 1),
                     np.zeros(2 * self.NUM_ACTIVE_TICK_RANGES),
+                    np.zeros(self.NUM_SENTIMENT_FEATURES),
                 ]
             ),
             np.concatenate( # high
@@ -89,6 +92,7 @@ class UniswapLPEnv(gym.Env):
                     self.MAX_PRICE * np.ones(self.ETH_PRICE_HISTORY_OFFSET + 1),
                     sys.maxsize * np.ones(self.NUM_ACTIVE_TICK_RANGES),
                     np.ones(self.NUM_ACTIVE_TICK_RANGES),
+                    sys.maxsize * np.ones(self.NUM_SENTIMENT_FEATURES)
                 ]
             ),
         )
@@ -203,6 +207,7 @@ class UniswapLPEnv(gym.Env):
 
         self.price_history = np.array(self.price_history_df.loc[self.current_step][2:])
         cur_price = self.price_history[-1]
+        self.sentiment_score = np.array(self.sentiment_df.loc[self.current_step][2:])
         self.starting_price = cur_price
         self.volume_ticks = np.array(self.volume_df.loc[self.current_step][2:])
         total_liquidity_ticks = np.array(self.liquidity_df.loc[self.current_step + self.ETH_PRICE_HISTORY_OFFSET][1:])
@@ -210,7 +215,7 @@ class UniswapLPEnv(gym.Env):
         self.fraction_liquidity_ticks = self.liquidities_provided / total_liquidity_ticks
         self.fee_history = []
 
-        obs = np.concatenate([total_position, self.price_history, self.volume_ticks, self.fraction_liquidity_ticks])
+        obs = np.concatenate([total_position, self.price_history, self.volume_ticks, self.fraction_liquidity_ticks, self.sentiment_score])
 
         return obs
 
@@ -346,7 +351,7 @@ class UniswapLPEnv(gym.Env):
             ]
         )
 
-        obs = np.concatenate([total_position, self.price_history, self.volume_ticks, self.fraction_liquidity_ticks])
+        obs = np.concatenate([total_position, self.price_history, self.volume_ticks, self.fraction_liquidity_ticks, self.sentiment_score])
 
         return obs
 
