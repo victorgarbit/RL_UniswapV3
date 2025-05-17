@@ -1,4 +1,4 @@
-    import os
+import os
 import time
 
 import yaml
@@ -7,7 +7,16 @@ import pandas as pd
 from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv
 
+import numpy as np
+
 from uniswap_lp_env import UniswapLPEnv, train_logger
+
+def create_sentiment_df():
+    sentiment_df = pd.DataFrame(np.random.randn(12976, 24), columns=[f'{i}' for i in range(24)])
+    sentiment_df.insert(0, ",", sentiment_df.index)
+    start_timestamp = 1620338400  # base UNIX timestamp
+    sentiment_df.insert(1, "Hour", [start_timestamp + 3600 * i for i in range(len(sentiment_df))])
+    return sentiment_df
 
 if __name__ == "__main__":
     with open("config.yml", "r") as yml_file:
@@ -46,6 +55,7 @@ if __name__ == "__main__":
     price_history_df = pd.read_csv("blockchain_data/blockchain_data/price_history_array_050521_102922.csv")
     volume_df = pd.read_csv("blockchain_data/blockchain_data/volume_array_050521_102922.csv", encoding="latin-1")
     liquidity_df = pd.read_csv("blockchain_data/blockchain_data/total_liquidity_array_050521_102922.csv")
+    sentiment_df = create_sentiment_df()
 
     # policy training
     env = DummyVecEnv(
@@ -90,3 +100,5 @@ if __name__ == "__main__":
     g.axes.get_xaxis().set_visible(False)
     timestamp = time.strftime("%Y%m%d-%H%M%S")  # <- safer timestamp
     plt.savefig(f"results/rl_train_{timestamp}.png")
+
+
